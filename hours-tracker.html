@@ -14,8 +14,11 @@
       --accent: #111827;
       --accentText: #ffffff;
       --danger: #b91c1c;
+      --success: #166534;
+      --successBg: #ecfdf5;
+      --warn: #92400e;
+      --warnBg: #fffbeb;
     }
-
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -24,12 +27,7 @@
       background: var(--bg);
       color: var(--text);
     }
-
-    .wrap {
-      max-width: 760px;
-      margin: 0 auto;
-    }
-
+    .wrap { max-width: 760px; margin: 0 auto; }
     .card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -38,32 +36,17 @@
       margin-bottom: 14px;
       box-shadow: 0 1px 2px rgba(0,0,0,0.04);
     }
-
-    h1 {
-      font-size: 20px;
-      margin: 0 0 6px;
-    }
-
-    .sub {
-      color: var(--muted);
-      font-size: 13px;
-      margin: 0;
-    }
-
-    .grid {
+    h1 { font-size: 20px; margin: 0 0 6px; }
+    h2 { font-size: 16px; margin: 0 0 8px; }
+    .sub { color: var(--muted); font-size: 13px; margin: 0; }
+    .grid, .stats {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
       margin-top: 14px;
     }
-
-    .grid-1 {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
+    .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 10px; }
+    .grid-1 { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
     label {
       display: block;
       font-size: 12px;
@@ -73,7 +56,6 @@
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
-
     input, textarea, button, select {
       width: 100%;
       border: 1px solid var(--border);
@@ -84,19 +66,14 @@
       background: #fff;
       color: var(--text);
     }
-
-    textarea {
-      min-height: 72px;
-      resize: vertical;
-    }
-
-    .actions {
+    textarea { min-height: 72px; resize: vertical; }
+    .actions, .inline-actions {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
       margin-top: 12px;
     }
-
+    .inline-actions { margin-top: 8px; }
     button {
       width: auto;
       cursor: pointer;
@@ -105,34 +82,23 @@
       border-color: var(--accent);
       font-weight: 700;
     }
-
     button.secondary {
       background: #fff;
       color: var(--text);
       border-color: var(--border);
       font-weight: 600;
     }
-
     button.danger {
       background: #fff;
       color: var(--danger);
       border-color: #fecaca;
     }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 10px;
-    }
-
     .stat {
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 12px;
       background: #fff;
     }
-
     .stat-label {
       font-size: 12px;
       color: var(--muted);
@@ -141,58 +107,58 @@
       letter-spacing: 0.04em;
       font-weight: 700;
     }
-
-    .stat-value {
-      font-size: 24px;
-      font-weight: 800;
+    .stat-value { font-size: 24px; font-weight: 800; }
+    .status {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.4;
+      border: 1px solid var(--border);
+      background: #fff;
     }
-
+    .status.success {
+      color: var(--success);
+      background: var(--successBg);
+      border-color: #bbf7d0;
+    }
+    .status.warn {
+      color: var(--warn);
+      background: var(--warnBg);
+      border-color: #fde68a;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
       font-size: 14px;
     }
-
     th, td {
       text-align: left;
       padding: 10px 8px;
       border-bottom: 1px solid var(--border);
       vertical-align: top;
     }
-
     th {
       color: var(--muted);
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
-
-    .empty {
-      color: var(--muted);
-      font-size: 14px;
-      margin-top: 8px;
-    }
-
-    .small {
+    .empty { color: var(--muted); font-size: 14px; margin-top: 8px; }
+    .small { font-size: 12px; color: var(--muted); }
+    .row-actions { display: flex; gap: 8px; justify-content: flex-end; }
+    .hidden { display: none; }
+    code.inline {
+      background: #f3f4f6;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1px 6px;
       font-size: 12px;
-      color: var(--muted);
     }
-
-    .row-actions {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-
     @media (max-width: 640px) {
-      .grid, .stats {
-        grid-template-columns: 1fr;
-      }
-
-      th:nth-child(4), td:nth-child(4) {
-        display: none;
-      }
+      .grid, .stats { grid-template-columns: 1fr; }
+      th:nth-child(4), td:nth-child(4) { display: none; }
     }
   </style>
 </head>
@@ -200,7 +166,7 @@
   <div class="wrap">
     <div class="card">
       <h1>Hours Tracker</h1>
-      <p class="sub">Simple, embeddable, and saved in your browser.</p>
+      <p class="sub">Simple, embeddable, and now able to sync to Supabase.</p>
 
       <div class="grid">
         <div>
@@ -234,7 +200,34 @@
       <div class="actions">
         <button id="addBtn">Add entry</button>
         <button id="exportBtn" class="secondary">Export CSV</button>
+        <button id="syncBtn" class="secondary">Sync now</button>
         <button id="clearBtn" class="danger">Clear all</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Supabase setup</h2>
+      <p class="sub">Paste your project URL and public key once. They stay saved in this browser.</p>
+
+      <div class="grid">
+        <div>
+          <label for="supabaseUrl">Supabase project URL</label>
+          <input id="supabaseUrl" type="text" placeholder="https://YOUR-PROJECT.supabase.co" />
+        </div>
+        <div>
+          <label for="supabaseKey">Supabase publishable / anon key</label>
+          <input id="supabaseKey" type="password" placeholder="sb_publishable_... or anon key" />
+        </div>
+      </div>
+
+      <div class="inline-actions">
+        <button id="saveSupabaseBtn" class="secondary">Save connection</button>
+        <button id="clearSupabaseBtn" class="danger">Forget connection</button>
+      </div>
+
+      <div id="syncStatus" class="status warn">Not connected. Your entries are still saved locally in this browser.</div>
+      <div class="small" style="margin-top:10px;">
+        Table name expected: <code class="inline">time_entries</code>
       </div>
     </div>
 
@@ -253,7 +246,7 @@
           <div class="stat-value" id="allTotal">0</div>
         </div>
       </div>
-      <div class="small" style="margin-top:10px;">Tip: this widget stores data in localStorage, so it stays saved in the same browser.</div>
+      <div class="small" style="margin-top:10px;">Local backup stays on in case Supabase is temporarily unavailable.</div>
     </div>
 
     <div class="card">
@@ -262,8 +255,12 @@
     </div>
   </div>
 
-  <script>
-    const STORAGE_KEY = 'startme_hours_tracker_entries_v1';
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const STORAGE_KEY = 'startme_hours_tracker_entries_v2';
+    const CONFIG_KEY = 'startme_hours_tracker_supabase_config_v1';
+    const TABLE_NAME = 'time_entries';
 
     const els = {
       date: document.getElementById('date'),
@@ -273,12 +270,21 @@
       note: document.getElementById('note'),
       addBtn: document.getElementById('addBtn'),
       exportBtn: document.getElementById('exportBtn'),
+      syncBtn: document.getElementById('syncBtn'),
       clearBtn: document.getElementById('clearBtn'),
+      saveSupabaseBtn: document.getElementById('saveSupabaseBtn'),
+      clearSupabaseBtn: document.getElementById('clearSupabaseBtn'),
+      supabaseUrl: document.getElementById('supabaseUrl'),
+      supabaseKey: document.getElementById('supabaseKey'),
+      syncStatus: document.getElementById('syncStatus'),
       weekTotal: document.getElementById('weekTotal'),
       monthTotal: document.getElementById('monthTotal'),
       allTotal: document.getElementById('allTotal'),
       tableWrap: document.getElementById('tableWrap')
     };
+
+    let supabase = null;
+    let syncInProgress = false;
 
     function todayISO() {
       const d = new Date();
@@ -297,6 +303,44 @@
 
     function saveEntries(entries) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    }
+
+    function getConfig() {
+      try {
+        return JSON.parse(localStorage.getItem(CONFIG_KEY)) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveConfig(config) {
+      localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+    }
+
+    function clearConfig() {
+      localStorage.removeItem(CONFIG_KEY);
+      supabase = null;
+    }
+
+    function initSupabaseClient() {
+      const config = getConfig();
+      if (!config.url || !config.key) {
+        supabase = null;
+        setStatus('Not connected. Your entries are still saved locally in this browser.', 'warn');
+        return;
+      }
+      try {
+        supabase = createClient(config.url, config.key);
+        setStatus('Connected to Supabase. New changes can sync to the cloud.', 'success');
+      } catch (error) {
+        supabase = null;
+        setStatus('Could not initialize Supabase. Check your URL and key.', 'warn');
+      }
+    }
+
+    function setStatus(message, type = 'warn') {
+      els.syncStatus.textContent = message;
+      els.syncStatus.className = 'status ' + type;
     }
 
     function startOfWeek(date) {
@@ -325,8 +369,66 @@
       return Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/\.00$/, '');
     }
 
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function csvEscape(value) {
+      const v = String(value || '');
+      return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+    }
+
+    function resetForm() {
+      els.date.value = todayISO();
+      els.hours.value = '';
+      els.project.value = '';
+      els.task.value = '';
+      els.note.value = '';
+    }
+
+    function toDbRow(entry) {
+      return {
+        id: entry.id,
+        entry_date: entry.date,
+        hours: Number(entry.hours) || 0,
+        project: entry.project || '',
+        task: entry.task || '',
+        note: entry.note || '',
+        created_at: entry.created_at || new Date().toISOString()
+      };
+    }
+
+    function fromDbRow(row) {
+      return {
+        id: row.id,
+        date: row.entry_date,
+        hours: Number(row.hours) || 0,
+        project: row.project || '',
+        task: row.task || '',
+        note: row.note || '',
+        created_at: row.created_at || new Date().toISOString()
+      };
+    }
+
+    function mergeEntries(localEntries, remoteEntries) {
+      const map = new Map();
+      for (const entry of [...localEntries, ...remoteEntries]) {
+        map.set(entry.id, entry);
+      }
+      return Array.from(map.values());
+    }
+
     function render() {
-      const entries = getEntries().sort((a, b) => (a.date < b.date ? 1 : -1));
+      const entries = getEntries().sort((a, b) => {
+        if (a.date === b.date) return (b.created_at || '').localeCompare(a.created_at || '');
+        return a.date < b.date ? 1 : -1;
+      });
+
       const now = new Date();
       const sow = startOfWeek(todayISO());
       const eow = endOfWeek(todayISO());
@@ -352,7 +454,7 @@
         return;
       }
 
-      const rows = entries.map((entry, index) => `
+      const rows = entries.map((entry) => `
         <tr>
           <td>${escapeHtml(entry.date)}</td>
           <td>${escapeHtml(formatHours(entry.hours))}</td>
@@ -385,24 +487,69 @@
       `;
     }
 
-    function escapeHtml(str) {
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+    async function syncFromCloud(showSuccess = true) {
+      if (!supabase || syncInProgress) return false;
+      syncInProgress = true;
+      try {
+        setStatus('Syncing with Supabase…', 'warn');
+        const { data, error } = await supabase
+          .from(TABLE_NAME)
+          .select('id, entry_date, hours, project, task, note, created_at')
+          .order('entry_date', { ascending: false })
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        const remoteEntries = (data || []).map(fromDbRow);
+        const merged = mergeEntries(getEntries(), remoteEntries);
+        saveEntries(merged);
+        render();
+
+        if (showSuccess) {
+          setStatus('Sync complete. Your entries are backed up to Supabase and locally in this browser.', 'success');
+        }
+        return true;
+      } catch (error) {
+        console.error(error);
+        setStatus('Could not sync from Supabase. Local data is still safe in this browser.', 'warn');
+        return false;
+      } finally {
+        syncInProgress = false;
+      }
     }
 
-    function resetForm() {
-      els.date.value = todayISO();
-      els.hours.value = '';
-      els.project.value = '';
-      els.task.value = '';
-      els.note.value = '';
+    async function pushEntryToCloud(entry) {
+      if (!supabase) return false;
+      try {
+        const { error } = await supabase
+          .from(TABLE_NAME)
+          .upsert(toDbRow(entry), { onConflict: 'id' });
+        if (error) throw error;
+        return true;
+      } catch (error) {
+        console.error(error);
+        setStatus('Saved locally, but cloud sync failed. You can use Sync now after setup is fixed.', 'warn');
+        return false;
+      }
     }
 
-    function addEntry() {
+    async function deleteEntryFromCloud(id) {
+      if (!supabase) return false;
+      try {
+        const { error } = await supabase
+          .from(TABLE_NAME)
+          .delete()
+          .eq('id', id);
+        if (error) throw error;
+        return true;
+      } catch (error) {
+        console.error(error);
+        setStatus('Deleted locally, but cloud delete failed. Run Sync now after reconnecting.', 'warn');
+        return false;
+      }
+    }
+
+    async function addEntry() {
       const date = els.date.value;
       const hours = parseFloat(els.hours.value);
       const project = els.project.value.trim();
@@ -418,24 +565,36 @@
         return;
       }
 
-      const entries = getEntries();
-      entries.push({
+      const entry = {
         id: crypto.randomUUID(),
         date,
         hours,
         project,
         task,
-        note
-      });
+        note,
+        created_at: new Date().toISOString()
+      };
+
+      const entries = getEntries();
+      entries.push(entry);
       saveEntries(entries);
-      resetForm();
       render();
+      resetForm();
+
+      const synced = await pushEntryToCloud(entry);
+      if (synced) {
+        setStatus('Entry added and synced to Supabase.', 'success');
+      }
     }
 
-    function deleteEntry(id) {
+    async function deleteEntry(id) {
       const next = getEntries().filter(entry => entry.id !== id);
       saveEntries(next);
       render();
+      const synced = await deleteEntryFromCloud(id);
+      if (synced) {
+        setStatus('Entry deleted from Supabase and local backup.', 'success');
+      }
     }
 
     function exportCSV() {
@@ -465,24 +624,75 @@
       URL.revokeObjectURL(url);
     }
 
-    function csvEscape(value) {
-      const v = String(value || '');
-      return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+    function fillConfigInputs() {
+      const config = getConfig();
+      els.supabaseUrl.value = config.url || '';
+      els.supabaseKey.value = config.key || '';
+    }
+
+    async function saveSupabaseConnection() {
+      const url = els.supabaseUrl.value.trim();
+      const key = els.supabaseKey.value.trim();
+
+      if (!url || !key) {
+        alert('Please paste both the Supabase URL and the public key.');
+        return;
+      }
+
+      saveConfig({ url, key });
+      initSupabaseClient();
+      await syncFromCloud(true);
+
+      const localEntries = getEntries();
+      if (localEntries.length && supabase) {
+        try {
+          const rows = localEntries.map(toDbRow);
+          const { error } = await supabase.from(TABLE_NAME).upsert(rows, { onConflict: 'id' });
+          if (error) throw error;
+          setStatus('Connected and initial sync complete. Local entries were pushed to Supabase.', 'success');
+        } catch (error) {
+          console.error(error);
+          setStatus('Connected, but the table setup may still be missing or blocked by permissions.', 'warn');
+        }
+      }
     }
 
     els.addBtn.addEventListener('click', addEntry);
     els.exportBtn.addEventListener('click', exportCSV);
-    els.clearBtn.addEventListener('click', () => {
+    els.syncBtn.addEventListener('click', () => syncFromCloud(true));
+    els.saveSupabaseBtn.addEventListener('click', saveSupabaseConnection);
+    els.clearSupabaseBtn.addEventListener('click', () => {
+      clearConfig();
+      fillConfigInputs();
+      setStatus('Supabase connection removed. Entries remain saved locally in this browser.', 'warn');
+    });
+    els.clearBtn.addEventListener('click', async () => {
       if (!getEntries().length) return;
-      if (confirm('Clear all tracked hours? This cannot be undone.')) {
-        localStorage.removeItem(STORAGE_KEY);
-        render();
+      if (!confirm('Clear all tracked hours? This cannot be undone.')) return;
+
+      if (supabase) {
+        try {
+          const { error } = await supabase.from(TABLE_NAME).delete().neq('id', '');
+          if (error) throw error;
+        } catch (error) {
+          console.error(error);
+          setStatus('Could not clear the cloud table. Local entries were still removed.', 'warn');
+        }
       }
+
+      localStorage.removeItem(STORAGE_KEY);
+      render();
     });
 
     window.deleteEntry = deleteEntry;
+
     resetForm();
+    fillConfigInputs();
+    initSupabaseClient();
     render();
+    if (supabase) {
+      syncFromCloud(false);
+    }
   </script>
 </body>
 </html>
