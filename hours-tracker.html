@@ -1,80 +1,703 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hours Tracker</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-input, button { margin: 5px; padding: 8px; }
-table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-th, td { border: 1px solid #ddd; padding: 8px; }
-th { background-color: #f4f4f4; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hours Tracker</title>
+  <style>
+    :root{
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --border: #d9deea;
+      --border-strong: #c7cfdf;
+      --text: #1f2937;
+      --muted: #667085;
+      --primary: #111827;
+      --primary-2: #0f172a;
+      --accent: #eef2ff;
+      --danger-border: #fecdd3;
+      --danger-text: #be123c;
+      --success: #ecfdf3;
+      --success-border: #b7ebc6;
+      --success-text: #166534;
+      --error: #fef2f2;
+      --error-border: #fecaca;
+      --error-text: #b42318;
+      --shadow: 0 10px 30px rgba(16,24,40,.06);
+      --radius: 20px;
+      --radius-sm: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f8f9fc 0%, #f3f5fa 100%);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1080px;
+      margin: 24px auto;
+      padding: 0 16px 32px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .sub {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      border: 1px solid #dbe4ff;
+      color: #344054;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: .92rem;
+      white-space: nowrap;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: .92rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+      color: #475467;
+      text-transform: uppercase;
+    }
+
+    input, textarea {
+      width: 100%;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 1rem;
+      color: var(--text);
+      background: #fff;
+      transition: border-color .15s ease, box-shadow .15s ease;
+      outline: none;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #94a3b8;
+      box-shadow: 0 0 0 4px rgba(148, 163, 184, .15);
+    }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: 1px solid var(--border-strong);
+      background: #fff;
+      color: var(--text);
+      border-radius: 16px;
+      padding: 13px 18px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .04s ease, background .15s ease, border-color .15s ease, color .15s ease;
+    }
+
+    button:hover { border-color: #98a2b3; }
+    button:active { transform: translateY(1px); }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-2);
+      border-color: var(--primary-2);
+    }
+
+    .btn-danger {
+      background: #fff;
+      color: var(--danger-text);
+      border-color: var(--danger-border);
+    }
+
+    .totals {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px 16px;
+      background: linear-gradient(180deg, #fff 0%, #fbfcff 100%);
+    }
+
+    .stat .kicker {
+      color: #667085;
+      font-size: .92rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .stat .value {
+      font-size: 2.1rem;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .help {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: .96rem;
+    }
+
+    .message {
+      display: none;
+      margin-top: 16px;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+
+    .message.show { display: block; }
+    .message.success {
+      display: block;
+      background: var(--success);
+      border-color: var(--success-border);
+      color: var(--success-text);
+    }
+
+    .message.error {
+      display: block;
+      background: var(--error);
+      border-color: var(--error-border);
+      color: var(--error-text);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 1.9rem;
+      letter-spacing: -0.03em;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th, td {
+      padding: 16px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: #667085;
+      font-size: .92rem;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      background: #fafbff;
+    }
+
+    tbody tr:hover {
+      background: #fcfcfe;
+    }
+
+    .project {
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+
+    .task {
+      color: #667085;
+      font-size: .95rem;
+    }
+
+    .empty {
+      padding: 26px 14px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .delete-btn {
+      padding: 10px 14px;
+      border-radius: 14px;
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
+      background: #fff;
+      font-weight: 700;
+    }
+
+    @media (max-width: 760px) {
+      .grid, .totals {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .wrap {
+        padding: 0 12px 24px;
+      }
+
+      .card {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      input, textarea, button {
+        font-size: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <section class="card">
+      <div class="header">
+        <div>
+          <h1>Hours Tracker</h1>
+          <div class="sub">Simple, embeddable, and synced to Supabase.</div>
+        </div>
+        <div class="pill">Cloud sync active</div>
+      </div>
 
-<h2>Hours Tracker</h2>
+      <div class="grid">
+        <div class="field">
+          <label for="date">Date</label>
+          <input type="date" id="date" />
+        </div>
+        <div class="field">
+          <label for="hours">Hours</label>
+          <input type="number" id="hours" min="0" step="0.25" placeholder="e.g. 2.5" />
+        </div>
+        <div class="field">
+          <label for="project">Project / category</label>
+          <input type="text" id="project" placeholder="e.g. Client work" />
+        </div>
+        <div class="field">
+          <label for="task">Task</label>
+          <input type="text" id="task" placeholder="e.g. Writing, meetings, design" />
+        </div>
+        <div class="field full">
+          <label for="note">Note</label>
+          <textarea id="note" placeholder="Optional details"></textarea>
+        </div>
+      </div>
 
-<input type="date" id="date">
-<input type="number" id="hours" placeholder="Hours">
-<input type="text" id="project" placeholder="Project">
-<input type="text" id="task" placeholder="Task">
-<input type="text" id="note" placeholder="Note">
-<button onclick="addEntry()">Add Entry</button>
+      <div class="actions">
+        <button class="btn-primary" id="addBtn">Add entry</button>
+        <button id="exportBtn">Export CSV</button>
+        <button class="btn-danger" id="clearBtn">Clear all</button>
+      </div>
 
-<table>
-<thead>
-<tr>
-<th>Date</th><th>Hours</th><th>Project</th><th>Task</th><th>Note</th><th>Delete</th>
-</tr>
-</thead>
-<tbody id="entries"></tbody>
-</table>
+      <div id="message" class="message"></div>
+    </section>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script>
-const SUPABASE_URL = "https://lbsfllvotajlgvjidfdf.supabase.co";
-const SUPABASE_KEY = "sb_publishable_RVZImf6MFUn6S0ySDGlZwg_fDxgNls1";
+    <section class="card">
+      <div class="totals">
+        <div class="stat">
+          <div class="kicker">This week</div>
+          <div class="value" id="weekTotal">0.00</div>
+        </div>
+        <div class="stat">
+          <div class="kicker">This month</div>
+          <div class="value" id="monthTotal">0.00</div>
+        </div>
+        <div class="stat">
+          <div class="kicker">All time</div>
+          <div class="value" id="allTotal">0.00</div>
+        </div>
+      </div>
+      <div class="help">Entries are stored in Supabase and also kept locally as a backup.</div>
+    </section>
 
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <section class="card">
+      <div class="section-title">
+        <h2>Recent entries</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Hours</th>
+              <th>Project / task</th>
+              <th>Note</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody id="entriesBody">
+            <tr><td class="empty" colspan="5">No entries yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
 
-async function loadEntries() {
-  const { data } = await client.from('time_entries').select('*').order('created_at', { ascending: false });
-  const table = document.getElementById('entries');
-  table.innerHTML = '';
-  data.forEach(e => {
-    const row = `<tr>
-      <td>${e.entry_date}</td>
-      <td>${e.hours}</td>
-      <td>${e.project || ''}</td>
-      <td>${e.task || ''}</td>
-      <td>${e.note || ''}</td>
-      <td><button onclick="deleteEntry('${e.id}')">X</button></td>
-    </tr>`;
-    table.innerHTML += row;
-  });
-}
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://lbsfllvotajlgvjidfdf.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_RVZImf6MFUn6S0ySDGlZwg_fDxgNls1";
+    const TABLE_NAME = "time_entries";
+    const LOCAL_KEY = "hours_tracker_entries_backup_v1";
 
-async function addEntry() {
-  const entry = {
-    entry_date: document.getElementById('date').value,
-    hours: parseFloat(document.getElementById('hours').value),
-    project: document.getElementById('project').value,
-    task: document.getElementById('task').value,
-    note: document.getElementById('note').value
-  };
-  await client.from('time_entries').insert([entry]);
-  loadEntries();
-}
+    const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-async function deleteEntry(id) {
-  await client.from('time_entries').delete().eq('id', id);
-  loadEntries();
-}
+    const els = {
+      date: document.getElementById('date'),
+      hours: document.getElementById('hours'),
+      project: document.getElementById('project'),
+      task: document.getElementById('task'),
+      note: document.getElementById('note'),
+      addBtn: document.getElementById('addBtn'),
+      exportBtn: document.getElementById('exportBtn'),
+      clearBtn: document.getElementById('clearBtn'),
+      body: document.getElementById('entriesBody'),
+      week: document.getElementById('weekTotal'),
+      month: document.getElementById('monthTotal'),
+      all: document.getElementById('allTotal'),
+      message: document.getElementById('message')
+    };
 
-loadEntries();
-</script>
+    let entries = [];
 
+    function todayString() {
+      const d = new Date();
+      const offset = d.getTimezoneOffset();
+      const local = new Date(d.getTime() - offset * 60000);
+      return local.toISOString().split('T')[0];
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function showMessage(text, type = 'success') {
+      els.message.className = 'message show ' + type;
+      els.message.textContent = text;
+      clearTimeout(showMessage.timer);
+      showMessage.timer = setTimeout(() => {
+        els.message.className = 'message';
+        els.message.textContent = '';
+      }, 3000);
+    }
+
+    function saveLocalBackup() {
+      try {
+        localStorage.setItem(LOCAL_KEY, JSON.stringify(entries));
+      } catch (e) {
+        // ignore local backup errors
+      }
+    }
+
+    function loadLocalBackup() {
+      try {
+        const raw = localStorage.getItem(LOCAL_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function sortEntries(data) {
+      return [...data].sort((a, b) => {
+        const dateDiff = new Date(b.entry_date) - new Date(a.entry_date);
+        if (dateDiff !== 0) return dateDiff;
+        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+      });
+    }
+
+    function startOfWeek(date) {
+      const d = new Date(date);
+      const day = d.getDay();
+      const diff = (day + 6) % 7;
+      d.setDate(d.getDate() - diff);
+      d.setHours(0, 0, 0, 0);
+      return d;
+    }
+
+    function calculateTotals() {
+      const now = new Date();
+      const weekStart = startOfWeek(now);
+      const month = now.getMonth();
+      const year = now.getFullYear();
+
+      let weekTotal = 0;
+      let monthTotal = 0;
+      let allTotal = 0;
+
+      for (const e of entries) {
+        const hrs = Number(e.hours) || 0;
+        const d = new Date((e.entry_date || todayString()) + 'T00:00:00');
+        allTotal += hrs;
+        if (d >= weekStart) weekTotal += hrs;
+        if (d.getMonth() === month && d.getFullYear() === year) monthTotal += hrs;
+      }
+
+      els.week.textContent = weekTotal.toFixed(2);
+      els.month.textContent = monthTotal.toFixed(2);
+      els.all.textContent = allTotal.toFixed(2);
+    }
+
+    function renderEntries() {
+      if (!entries.length) {
+        els.body.innerHTML = '<tr><td class="empty" colspan="5">No entries yet.</td></tr>';
+        calculateTotals();
+        return;
+      }
+
+      els.body.innerHTML = entries.map(entry => `
+        <tr>
+          <td>${escapeHtml(entry.entry_date || '')}</td>
+          <td>${Number(entry.hours || 0).toFixed(2)}</td>
+          <td>
+            <div class="project">${escapeHtml(entry.project || 'Untitled')}</div>
+            <div class="task">${escapeHtml(entry.task || '')}</div>
+          </td>
+          <td>${escapeHtml(entry.note || '')}</td>
+          <td><button class="delete-btn" data-id="${escapeHtml(entry.id)}">Delete</button></td>
+        </tr>
+      `).join('');
+
+      calculateTotals();
+
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.getAttribute('data-id');
+          await deleteEntry(id);
+        });
+      });
+    }
+
+    async function fetchEntries() {
+      const { data, error } = await client
+        .from(TABLE_NAME)
+        .select('*')
+        .order('entry_date', { ascending: false })
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data || [];
+    }
+
+    async function refreshEntries() {
+      try {
+        const remoteEntries = await fetchEntries();
+        entries = sortEntries(remoteEntries);
+        saveLocalBackup();
+        renderEntries();
+      } catch (error) {
+        entries = sortEntries(loadLocalBackup());
+        renderEntries();
+        showMessage('Could not reach Supabase. Showing local backup instead.', 'error');
+      }
+    }
+
+    async function addEntry() {
+      const entry = {
+        entry_date: els.date.value || todayString(),
+        hours: parseFloat(els.hours.value),
+        project: els.project.value.trim(),
+        task: els.task.value.trim(),
+        note: els.note.value.trim()
+      };
+
+      if (!entry.hours || entry.hours <= 0) {
+        showMessage('Please enter a valid number of hours.', 'error');
+        return;
+      }
+
+      try {
+        const { error } = await client.from(TABLE_NAME).insert([entry]);
+        if (error) throw error;
+
+        els.hours.value = '';
+        els.project.value = '';
+        els.task.value = '';
+        els.note.value = '';
+        els.date.value = todayString();
+
+        await refreshEntries();
+        showMessage('Entry added and synced.');
+      } catch (error) {
+        showMessage('Could not save entry to Supabase.', 'error');
+      }
+    }
+
+    async function deleteEntry(id) {
+      try {
+        const { error } = await client.from(TABLE_NAME).delete().eq('id', id);
+        if (error) throw error;
+        await refreshEntries();
+        showMessage('Entry deleted.');
+      } catch (error) {
+        showMessage('Could not delete entry.', 'error');
+      }
+    }
+
+    async function clearAllEntries() {
+      if (!entries.length) return;
+
+      const confirmed = window.confirm('Clear all entries? This will delete them from Supabase too.');
+      if (!confirmed) return;
+
+      try {
+        const ids = entries.map(e => e.id).filter(Boolean);
+        if (ids.length) {
+          const { error } = await client.from(TABLE_NAME).delete().in('id', ids);
+          if (error) throw error;
+        }
+        entries = [];
+        saveLocalBackup();
+        renderEntries();
+        showMessage('All entries cleared.');
+      } catch (error) {
+        showMessage('Could not clear all entries.', 'error');
+      }
+    }
+
+    function exportCSV() {
+      if (!entries.length) {
+        showMessage('No entries to export.', 'error');
+        return;
+      }
+
+      const header = ['Date', 'Hours', 'Project', 'Task', 'Note'];
+      const rows = entries.map(e => [
+        e.entry_date || '',
+        e.hours || '',
+        e.project || '',
+        e.task || '',
+        e.note || ''
+      ]);
+
+      const csv = [header, ...rows]
+        .map(row => row.map(value => {
+          const str = String(value ?? '');
+          return `"${str.replace(/"/g, '""')}"`;
+        }).join(','))
+        .join('\n');
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'hours-tracker-export.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    function bindEvents() {
+      els.addBtn.addEventListener('click', addEntry);
+      els.exportBtn.addEventListener('click', exportCSV);
+      els.clearBtn.addEventListener('click', clearAllEntries);
+
+      [els.hours, els.project, els.task, els.note].forEach(el => {
+        el.addEventListener('keydown', e => {
+          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+            addEntry();
+          }
+        });
+      });
+    }
+
+    async function init() {
+      els.date.value = todayString();
+      bindEvents();
+      entries = sortEntries(loadLocalBackup());
+      renderEntries();
+      await refreshEntries();
+    }
+
+    init();
+  </script>
 </body>
 </html>
