@@ -149,6 +149,24 @@
     .small { font-size: 12px; color: var(--muted); }
     .row-actions { display: flex; gap: 8px; justify-content: flex-end; }
     .hidden { display: none; }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .header-copy {
+      min-width: 0;
+      flex: 1 1 320px;
+    }
+    #settingsToggleBtn {
+      margin-left: auto;
+      align-self: flex-start;
+    }
+    #supabaseCard.hidden-by-default {
+      display: none;
+    }
     code.inline {
       background: #f3f4f6;
       border: 1px solid var(--border);
@@ -165,8 +183,13 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>Hours Tracker</h1>
-      <p class="sub">Simple, embeddable, and now able to sync to Supabase.</p>
+      <div class="header-row">
+        <div class="header-copy">
+          <h1>Hours Tracker</h1>
+          <p class="sub">Simple, embeddable, and now able to sync to Supabase.</p>
+        </div>
+        <button id="settingsToggleBtn" class="secondary" type="button">Settings</button>
+      </div>
 
       <div class="grid">
         <div>
@@ -205,9 +228,9 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="supabaseCard">
       <h2>Supabase setup</h2>
-      <p class="sub">Paste your project URL and public key once. They stay saved in this browser.</p>
+      <p class="sub" id="supabaseIntro">Paste your project URL and public key once. They stay saved in this browser.</p>
 
       <div class="grid">
         <div>
@@ -272,10 +295,13 @@
       exportBtn: document.getElementById('exportBtn'),
       syncBtn: document.getElementById('syncBtn'),
       clearBtn: document.getElementById('clearBtn'),
+      settingsToggleBtn: document.getElementById('settingsToggleBtn'),
       saveSupabaseBtn: document.getElementById('saveSupabaseBtn'),
       clearSupabaseBtn: document.getElementById('clearSupabaseBtn'),
       supabaseUrl: document.getElementById('supabaseUrl'),
       supabaseKey: document.getElementById('supabaseKey'),
+      supabaseCard: document.getElementById('supabaseCard'),
+      supabaseIntro: document.getElementById('supabaseIntro'),
       syncStatus: document.getElementById('syncStatus'),
       weekTotal: document.getElementById('weekTotal'),
       monthTotal: document.getElementById('monthTotal'),
@@ -285,6 +311,7 @@
 
     let supabase = null;
     let syncInProgress = false;
+    let settingsOpen = false;
 
     function todayISO() {
       const d = new Date();
@@ -322,18 +349,39 @@
       supabase = null;
     }
 
+
+    function isConfigured() {
+      const config = getConfig();
+      return Boolean(config.url && config.key);
+    }
+
+    function updateSettingsUI(forceOpen = null) {
+      if (typeof forceOpen === 'boolean') settingsOpen = forceOpen;
+
+      const configured = isConfigured();
+      const shouldShowCard = settingsOpen || !configured;
+      els.supabaseCard.classList.toggle('hidden-by-default', !shouldShowCard);
+      els.settingsToggleBtn.textContent = shouldShowCard ? 'Hide settings' : 'Settings';
+      els.supabaseIntro.textContent = configured
+        ? 'Your Supabase connection is saved in this browser. Open settings if you need to reconnect or update it.'
+        : 'Paste your project URL and public key once. They stay saved in this browser.';
+    }
+
     function initSupabaseClient() {
       const config = getConfig();
       if (!config.url || !config.key) {
         supabase = null;
+        updateSettingsUI(true);
         setStatus('Not connected. Your entries are still saved locally in this browser.', 'warn');
         return;
       }
       try {
         supabase = createClient(config.url, config.key);
+        updateSettingsUI(false);
         setStatus('Connected to Supabase. New changes can sync to the cloud.', 'success');
       } catch (error) {
         supabase = null;
+        updateSettingsUI(true);
         setStatus('Could not initialize Supabase. Check your URL and key.', 'warn');
       }
     }
@@ -649,21 +697,27 @@
           const rows = localEntries.map(toDbRow);
           const { error } = await supabase.from(TABLE_NAME).upsert(rows, { onConflict: 'id' });
           if (error) throw error;
+          updateSettingsUI(false);
           setStatus('Connected and initial sync complete. Local entries were pushed to Supabase.', 'success');
         } catch (error) {
           console.error(error);
+          updateSettingsUI(true);
           setStatus('Connected, but the table setup may still be missing or blocked by permissions.', 'warn');
         }
       }
     }
 
     els.addBtn.addEventListener('click', addEntry);
+    els.settingsToggleBtn.addEventListener('click', () => {
+      updateSettingsUI(!settingsOpen);
+    });
     els.exportBtn.addEventListener('click', exportCSV);
     els.syncBtn.addEventListener('click', () => syncFromCloud(true));
     els.saveSupabaseBtn.addEventListener('click', saveSupabaseConnection);
     els.clearSupabaseBtn.addEventListener('click', () => {
       clearConfig();
       fillConfigInputs();
+      updateSettingsUI(true);
       setStatus('Supabase connection removed. Entries remain saved locally in this browser.', 'warn');
     });
     els.clearBtn.addEventListener('click', async () => {
@@ -688,6 +742,7 @@
 
     resetForm();
     fillConfigInputs();
+    updateSettingsUI(false);
     initSupabaseClient();
     render();
     if (supabase) {
